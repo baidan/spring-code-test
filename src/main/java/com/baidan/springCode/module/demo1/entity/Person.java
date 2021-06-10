@@ -1,10 +1,17 @@
-package com.baidan.springCode.module.configCode.entity;
+package com.baidan.springCode.module.demo1.entity;
 
 public class Person {
     public String name;
     public Integer age;
 
     public Person() {
+        System.out.println("空参构造：------person实例化------");
+    }
+
+    public Person(String name, Integer age) {
+        this.name = name;
+        this.age = age;
+        System.out.println("有参构造：------person实例化------");
     }
 
     public String getName() {
@@ -29,10 +36,5 @@ public class Person {
                 "name='" + name + '\'' +
                 ", age=" + age +
                 '}';
-    }
-
-    public Person(String name, Integer age) {
-        this.name = name;
-        this.age = age;
     }
 }

@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-    <bean id="person" class="com.baidan.springCode.module.configCode.entity.Person">
+    <bean id="person" class="com.baidan.springCode.module.demo1.entity.Person">
         <property name="age" value="18"></property>
         <property name="name" value="张山"></property>
     </bean>

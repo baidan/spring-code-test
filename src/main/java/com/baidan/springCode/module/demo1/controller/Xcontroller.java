@@ -1,4 +1,4 @@
-package com.baidan.springCode.module.configCode.controller;
+package com.baidan.springCode.module.demo1.controller;
 
 import org.springframework.stereotype.Controller;
 

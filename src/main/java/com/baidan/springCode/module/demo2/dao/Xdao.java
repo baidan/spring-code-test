@@ -1,4 +1,4 @@
-package com.baidan.springCode.module.configCode.dao;
+package com.baidan.springCode.module.demo2.dao;
 
 import org.springframework.stereotype.Repository;
 
