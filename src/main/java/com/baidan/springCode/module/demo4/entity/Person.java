@@ -1,19 +1,10 @@
-package com.baidan.springCode.module.demo1.entity;
+package com.baidan.springCode.module.demo4.entity;
 
 public class Person {
     public String name;
     public Integer age;
 
     public Person() {
-        System.out.println("空参构造：------person实例化------");
-        System.out.println(this.toString());
-    }
-
-    public Person(String name, Integer age) {
-        this.name = name;
-        this.age = age;
-        System.out.println("有参构造：------person实例化------");
-        System.out.println(this.toString());
     }
 
     public String getName() {
@@ -32,11 +23,16 @@ public class Person {
         this.age = age;
     }
 
-/*    @Override
+    @Override
     public String toString() {
         return "Person{" +
                 "name='" + name + '\'' +
                 ", age=" + age +
                 '}';
-    }*/
+    }
+
+    public Person(String name, Integer age) {
+        this.name = name;
+        this.age = age;
+    }
 }

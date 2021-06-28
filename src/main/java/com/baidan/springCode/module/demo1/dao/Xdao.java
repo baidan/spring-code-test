@@ -2,7 +2,7 @@ package com.baidan.springCode.module.demo1.dao;
 
 import org.springframework.stereotype.Repository;
 
-//@Repository
+@Repository
 public class Xdao {
     public Integer num;
 

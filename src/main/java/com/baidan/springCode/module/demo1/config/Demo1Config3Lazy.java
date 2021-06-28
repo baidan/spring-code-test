@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Lazy;
 
 @Configuration
 public class Demo1Config3Lazy {
-    /*@Lazy
+    @Lazy
     @Bean
     public Person personLazy() {
         System.out.println("给容器添加person......");
         return new Person("邹攀", 30);
-    }*/
+    }
 }
