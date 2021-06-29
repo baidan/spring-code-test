@@ -1,10 +1,7 @@
 package com.baidan.springCode.module.demo1.config;
 
 import com.baidan.springCode.module.demo1.entity.Person;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-
+import org.springframework.context.annotation.*;
 
 @Configuration
 @ComponentScan("com.baidan.springCode.module.demo1")

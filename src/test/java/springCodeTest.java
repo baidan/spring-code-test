@@ -10,12 +10,24 @@ import com.baidan.springCode.module.demo3.config.Demo3Config;
 import com.baidan.springCode.module.demo4.config.Demo4Config;
 import com.baidan.springCode.module.demo4.config.Demo4Config2;
 import com.baidan.springCode.module.demo4.config.Demo4Config3;
+import com.baidan.springCode.module.demo5.config.Demo5Config;
+import com.baidan.springCode.module.demo5.config.Demo5ConfigBeanDefinition;
 import org.junit.Test;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Controller;
 
+import java.net.URL;
 import java.util.Date;
 
 public class springCodeTest {
@@ -33,6 +45,35 @@ public class springCodeTest {
 
         Person person = (Person) app.getBean("person");
         System.out.println(person);
+
+
+    }
+
+
+    @Test
+    public void xmlTest() {
+        BeanDefinitionRegistry beanFactory = new DefaultListableBeanFactory();
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
+        ClassPathResource resource = new ClassPathResource("beans.xml");
+        //整个资源加载的切入点。
+        reader.loadBeanDefinitions(resource);
+
+        String[] beanDefinitionNames = beanFactory.getBeanDefinitionNames();
+        for (String a : beanDefinitionNames) {
+            System.out.println("a===" + a);
+        }
+
+        BeanDefinition beanDefinition = beanFactory.getBeanDefinition("person");
+        beanDefinition.setDescription("手动注入");
+
+        System.out.println("------该对象在spring中的附加属性如下------");
+        System.out.println("父类：" + beanDefinition.getParentName());
+        System.out.println("描述：" + beanDefinition.getDescription());
+        System.out.println("spring的名称：" + beanDefinition.getBeanClassName());
+        System.out.println("实例范围：" + beanDefinition.getScope());
+        System.out.println("是否是懒加载：" + beanDefinition.isLazyInit());
+        System.out.println("是否是抽象类：" + beanDefinition.isAbstract());
+        System.out.println("类路径：" + beanDefinition.getSource());
     }
 
     @Test
@@ -59,6 +100,10 @@ public class springCodeTest {
         Object person1 = app.getBean("personPrototype");
         Object person2 = app.getBean("personPrototype");
         System.out.println(person1 == person2);
+
+        int beanDefinitionCount = app.getBeanDefinitionCount();
+        System.out.println("beanDefinitionCount===" + beanDefinitionCount);
+
     }
 
     @Test
@@ -137,5 +182,69 @@ public class springCodeTest {
         for (String a : beanDefinitionNames) {
             System.out.println("a===" + a);
         }
+    }
+
+    /**
+     * 产生的问题：如果是xml读取，见：xmlTest()，自定义的后置处理器未触发？？？ 原因待查找
+     */
+    @Test
+    public void annotationDemo5BeanDefinition() {
+        //以下三行代码完成了spring的启动
+        AnnotationConfigApplicationContext app = new AnnotationConfigApplicationContext();
+        //注册配置类
+        app.register(Demo5ConfigBeanDefinition.class);
+        //加载或者刷新当前的配置信息
+        app.refresh();
+
+        /*String[] beanDefinitionNames = app.getBeanDefinitionNames();
+        for (String a : beanDefinitionNames) {
+            System.out.println("a===" + a);
+        }
+        //单例模式，多例模式测试
+        Object person1 = app.getBean("demo5ConfigBeanDefinition");
+        Object person2 = app.getBean("demo5ConfigBeanDefinition");
+        System.out.println(person1 == person2);
+
+        int beanDefinitionCount = app.getBeanDefinitionCount();
+        System.out.println("beanDefinitionCount===" + beanDefinitionCount);*/
+
+        //获取InterService对应的BeanDefinition ，默认名称为interService，关于名字的更改以后讲。
+        BeanDefinition beanDefinition = app.getBeanDefinition("demo5ConfigBeanDefinition");
+
+        System.out.println("------该对象在spring中的附加属性如下------");
+        System.out.println("父类：" + beanDefinition.getParentName());
+        System.out.println("描述：" + beanDefinition.getDescription());
+        System.out.println("spring的名称：" + beanDefinition.getBeanClassName());
+        System.out.println("实例范围：" + beanDefinition.getScope());
+        System.out.println("是否是懒加载：" + beanDefinition.isLazyInit());
+        System.out.println("是否是抽象类：" + beanDefinition.isAbstract());
+        System.out.println("类路径：" + beanDefinition.getSource());
+    }
+
+    @Test
+    public void annotationDemo5BeanDefinition2() {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        //注册配置类
+        context.register(Demo5Config.class);
+        GenericBeanDefinition beanDefinitionApp = new GenericBeanDefinition();
+        beanDefinitionApp.setBeanClassName("com.baidan.springCode.module.demo5.config.Demo5Config");
+        beanDefinitionApp.setScope("singleton");
+        beanDefinitionApp.setDescription("手动注入");
+        beanDefinitionApp.setAbstract(false);
+        //将beanDefinition注册到spring容器中
+        context.registerBeanDefinition("demo5Config", beanDefinitionApp);
+        //加载或者刷新当前的配置信息
+        context.refresh();
+
+        BeanDefinition beanDefinition = context.getBeanDefinition("demo5Config");
+        System.out.println("------该对象在spring中的附加属性如下------");
+        System.out.println("父类：" + beanDefinition.getParentName());
+        System.out.println("描述：" + beanDefinition.getDescription());
+        System.out.println("spring的名称：" + beanDefinition.getBeanClassName());
+        System.out.println("实例范围：" + beanDefinition.getScope());
+        System.out.println("是否是懒加载：" + beanDefinition.isLazyInit());
+        System.out.println("是否是抽象类：" + beanDefinition.isAbstract());
+        System.out.println("类路径：" + beanDefinition.getSource());
+
     }
 }
