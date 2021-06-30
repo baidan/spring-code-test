@@ -12,12 +12,12 @@ import com.baidan.springCode.module.demo4.config.Demo4Config2;
 import com.baidan.springCode.module.demo4.config.Demo4Config3;
 import com.baidan.springCode.module.demo5.config.Demo5Config;
 import com.baidan.springCode.module.demo5.config.Demo5ConfigBeanDefinition;
+import com.baidan.springCode.module.demo5.entity.Animal;
+import com.baidan.springCode.module.demo5.entity.Cat;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.beans.factory.support.GenericBeanDefinition;
+import org.springframework.beans.factory.support.*;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -226,7 +226,9 @@ public class springCodeTest {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         //注册配置类
         context.register(Demo5Config.class);
+        //Generic Bean Definition 通用Bean定义spring2.5之后版本才有
         GenericBeanDefinition beanDefinitionApp = new GenericBeanDefinition();
+        new RootBeanDefinition();
         beanDefinitionApp.setBeanClassName("com.baidan.springCode.module.demo5.config.Demo5Config");
         beanDefinitionApp.setScope("singleton");
         beanDefinitionApp.setDescription("手动注入");
@@ -246,5 +248,65 @@ public class springCodeTest {
         System.out.println("是否是抽象类：" + beanDefinition.isAbstract());
         System.out.println("类路径：" + beanDefinition.getSource());
 
+    }
+
+    @Test
+    public void rootBeanDefAndChildBeanDefTest() {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        //注册配置类
+        context.register(Demo5Config.class);
+
+        //模板BeanDefinition
+        RootBeanDefinition root = new RootBeanDefinition();
+        //设置为抽象类
+        root.setAbstract(true);
+        root.setDescription("I'M CAT,I'M TEMPLE");
+        root.setBeanClass(Cat.class);
+        root.getPropertyValues().add("name", "I'M CAT");
+        root.getPropertyValues().add("age", 15);
+        root.getPropertyValues().add("sex", 1);
+        //注册，放到IOC容器中
+        context.registerBeanDefinition("cat", root);
+
+        //child继承root
+        ChildBeanDefinition child = new ChildBeanDefinition("cat");
+        //注册，放到IOC容器中,等于取了一个别名
+        context.registerBeanDefinition("childBean", child);
+        context.refresh();
+        System.out.println("----------------");
+        System.out.println(((Cat) context.getBean("childBean")).getName());
+        System.out.println(((Cat) context.getBean("childBean")).getAge());
+    }
+
+    @Test
+    public void rootBeanDefAndChildBeanDefTest2() {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        //注册配置类
+        context.register(Demo5Config.class);
+        //模板BeanDefinition
+        GenericBeanDefinition root = new GenericBeanDefinition();
+        //设置为抽象类
+        root.setAbstract(true);
+        root.setDescription("I'M Animal");
+        root.setBeanClass(Animal.class);
+        root.getPropertyValues().add("name", "小小猫");
+        root.getPropertyValues().add("age", 15);
+        root.setScope(BeanDefinition.SCOPE_PROTOTYPE);
+        //注册，放到IOC容器中
+        context.registerBeanDefinition("animal", root);
+
+        //child继承root
+        GenericBeanDefinition childCat = new GenericBeanDefinition();
+        childCat.setParentName("animal");
+        childCat.setAbstract(false);
+        childCat.setBeanClass(Cat.class);
+        //注册，放到IOC容器中
+        context.registerBeanDefinition("cat", childCat);
+
+        context.refresh();
+
+        System.out.println("---1:" + ((Cat) context.getBean("cat")).getName());
+        System.out.println("---2:" + ((Cat) context.getBean("cat")).getAge());
+        System.out.println("---3:" + context.getBeanDefinition("cat").getScope());
     }
 }
