@@ -2,12 +2,12 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-    <bean id="person" class="com.baidan.springCode.module.demo1.entity.Person"
+    <bean id="person" class="com.baidan.springCode.module.spring.demo1.entity.Person"
           parent="demo5Config">
         <property name="age" value="18"></property>
         <property name="name" value="张山"></property>
     </bean>
-    <bean id="demo5Config" class="com.baidan.springCode.module.demo5.config.Demo5Config"/>
+    <bean id="demo5Config" class="com.baidan.springCode.module.spring.demo5.config.Demo5Config"/>
     <bean id="myBeanFactoryPostProcessor"
-          class="com.baidan.springCode.module.demo5.processor.MyBeanFactoryPostProcessor"/>
+          class="com.baidan.springCode.module.spring.demo5.processor.MyBeanFactoryPostProcessor"/>
 </beans>

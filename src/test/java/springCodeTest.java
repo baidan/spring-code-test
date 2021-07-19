@@ -1,21 +1,19 @@
-import com.baidan.springCode.module.demo1.config.Demo1Config;
-import com.baidan.springCode.module.demo1.config.Demo1Config2Prototype;
-import com.baidan.springCode.module.demo1.config.Demo1Config3Lazy;
-import com.baidan.springCode.module.demo1.entity.Person;
-import com.baidan.springCode.module.demo1.service.IXservice;
-import com.baidan.springCode.module.demo2.config.Demo2Config;
-import com.baidan.springCode.module.demo2.config.Demo2ConfigType1;
-import com.baidan.springCode.module.demo2.config.Demo2ConfigType2;
-import com.baidan.springCode.module.demo3.config.Demo3Config;
-import com.baidan.springCode.module.demo4.config.Demo4Config;
-import com.baidan.springCode.module.demo4.config.Demo4Config2;
-import com.baidan.springCode.module.demo4.config.Demo4Config3;
-import com.baidan.springCode.module.demo5.config.Demo5Config;
-import com.baidan.springCode.module.demo5.config.Demo5ConfigBeanDefinition;
-import com.baidan.springCode.module.demo5.entity.Animal;
-import com.baidan.springCode.module.demo5.entity.Cat;
+import com.baidan.springCode.module.spring.demo1.config.Demo1Config;
+import com.baidan.springCode.module.spring.demo1.config.Demo1Config2Prototype;
+import com.baidan.springCode.module.spring.demo1.config.Demo1Config3Lazy;
+import com.baidan.springCode.module.spring.demo1.entity.Person;
+import com.baidan.springCode.module.spring.demo2.config.Demo2Config;
+import com.baidan.springCode.module.spring.demo2.config.Demo2ConfigType1;
+import com.baidan.springCode.module.spring.demo2.config.Demo2ConfigType2;
+import com.baidan.springCode.module.spring.demo3.config.Demo3Config;
+import com.baidan.springCode.module.spring.demo4.config.Demo4Config;
+import com.baidan.springCode.module.spring.demo4.config.Demo4Config2;
+import com.baidan.springCode.module.spring.demo4.config.Demo4Config3;
+import com.baidan.springCode.module.spring.demo5.config.Demo5Config;
+import com.baidan.springCode.module.spring.demo5.config.Demo5ConfigBeanDefinition;
+import com.baidan.springCode.module.spring.demo5.entity.Animal;
+import com.baidan.springCode.module.spring.demo5.entity.Cat;
 import org.junit.Test;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.*;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
@@ -23,11 +21,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Controller;
 
-import java.net.URL;
 import java.util.Date;
 
 public class springCodeTest {
@@ -229,7 +224,7 @@ public class springCodeTest {
         //Generic Bean Definition 通用Bean定义spring2.5之后版本才有
         GenericBeanDefinition beanDefinitionApp = new GenericBeanDefinition();
         new RootBeanDefinition();
-        beanDefinitionApp.setBeanClassName("com.baidan.springCode.module.demo5.config.Demo5Config");
+        beanDefinitionApp.setBeanClassName("com.baidan.springCode.module.spring.demo5.config.Demo5Config");
         beanDefinitionApp.setScope("singleton");
         beanDefinitionApp.setDescription("手动注入");
         beanDefinitionApp.setAbstract(false);
@@ -279,7 +274,7 @@ public class springCodeTest {
     }
 
     @Test
-    public void rootBeanDefAndChildBeanDefTest2() {
+    public void rootBeanDefAndChildBeanDefTest2() throws ClassNotFoundException, NoSuchMethodException {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         //注册配置类
         context.register(Demo5Config.class);
@@ -291,9 +286,17 @@ public class springCodeTest {
         root.setBeanClass(Animal.class);
         root.getPropertyValues().add("name", "小小猫");
         root.getPropertyValues().add("age", 15);
+        //root.getPropertyValues().add("type", "cat_y");
         root.setScope(BeanDefinition.SCOPE_PROTOTYPE);
         //注册，放到IOC容器中
         context.registerBeanDefinition("animal", root);
+        //执行到此处
+        /**
+         * Generic bean: class [com.baidan.springCode.module.spring.demo5.entity.Animal];
+         * scope=prototype; abstract=true; lazyInit=null; autowireMode=0; dependencyCheck=0;
+         * autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null;
+         * initMethodName=null; destroyMethodName=null
+         * */
 
         //child继承root
         GenericBeanDefinition childCat = new GenericBeanDefinition();
@@ -302,11 +305,22 @@ public class springCodeTest {
         childCat.setBeanClass(Cat.class);
         //注册，放到IOC容器中
         context.registerBeanDefinition("cat", childCat);
-
         context.refresh();
 
-        System.out.println("---1:" + ((Cat) context.getBean("cat")).getName());
-        System.out.println("---2:" + ((Cat) context.getBean("cat")).getAge());
+        /**
+         * Generic bean with parent 'animal':class [com.baidan.springCode.module.spring.demo5.entity.Cat];
+         * scope=; abstract=false; lazyInit=null; autowireMode=0;
+         * dependencyCheck=0; autowireCandidate=true; primary=false;
+         * factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null
+         **/
+
+        //Object beanInstance = doCreateBean(beanName, mbdToUse, args); //实际实例化
+
+        Cat cat = (Cat) context.getBean("cat");
+        System.out.println("---1:" + cat.getName());
+        System.out.println("---2:" + cat.getAge());
         System.out.println("---3:" + context.getBeanDefinition("cat").getScope());
+
+
     }
 }
