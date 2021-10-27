@@ -13,6 +13,7 @@ import com.baidan.springCode.module.spring.demo5.config.Demo5Config;
 import com.baidan.springCode.module.spring.demo5.config.Demo5ConfigBeanDefinition;
 import com.baidan.springCode.module.spring.demo5.entity.Animal;
 import com.baidan.springCode.module.spring.demo5.entity.Cat;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.*;
@@ -23,24 +24,30 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 
+import java.io.IOException;
 import java.util.Date;
 
+@Slf4j
 public class springCodeTest {
     public static void main(String[] args) {
         //ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext("beans.xml");
-        System.out.println(new Date().getTime());
+        long timeFlag1 = new Date().getTime();
+        log.info(String.valueOf(timeFlag1));
         ApplicationContext app = new ClassPathXmlApplicationContext("beans.xml");
-        System.out.println(new Date().getTime());
+        long timeFlag2 = new Date().getTime();
+        log.info(String.valueOf(timeFlag2));
+        log.info(String.valueOf(timeFlag2-timeFlag1));
         ApplicationContext app1 = new AnnotationConfigApplicationContext(Demo1Config.class);
-        System.out.println(new Date().getTime());
+        long timeFlag3 = new Date().getTime();
+        log.info(String.valueOf(timeFlag3));
+        log.info(String.valueOf(timeFlag3-timeFlag2));
         String[] beanNamesForType = app.getBeanNamesForType(Person.class);
         for (String item : beanNamesForType) {
-            System.out.println(item);
+            log.info(item);
         }
 
         Person person = (Person) app.getBean("person");
-        System.out.println(person);
-
+        log.info(String.valueOf(person));
 
     }
 
@@ -204,7 +211,8 @@ public class springCodeTest {
         System.out.println("beanDefinitionCount===" + beanDefinitionCount);*/
 
         //获取InterService对应的BeanDefinition ，默认名称为interService，关于名字的更改以后讲。
-        BeanDefinition beanDefinition = app.getBeanDefinition("demo5ConfigBeanDefinition");
+        //BeanDefinition beanDefinition = app.getBeanDefinition("demo5ConfigBeanDefinition");
+        BeanDefinition beanDefinition = app.getBeanDefinition("Demo5ConfigBeanDefinition");
 
         System.out.println("------该对象在spring中的附加属性如下------");
         System.out.println("父类：" + beanDefinition.getParentName());
@@ -322,5 +330,71 @@ public class springCodeTest {
         System.out.println("---3:" + context.getBeanDefinition("cat").getScope());
 
 
+    }
+
+
+    private static int x=0, y=0;
+    private static int a=0, b=0;
+    //指令重排序测试
+    @Test
+    public  void  testDisOrder() throws InterruptedException {
+        for (int i = 0;;){
+             i++;
+             x=0;   y=0;
+             a=0;   b=0;
+            Thread thread1 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    a = 1;
+                    x = b;
+                }
+            });
+
+            Thread thread2 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    b = 1;
+                    y = a;
+                }
+            });
+
+            thread1.start();
+            thread2.start();
+
+            thread1.join();
+            thread2.join();
+            String result = "第"+i+"次（"+x+","+y+")";
+            if(x == 0 && y==0){
+                System.out.println(result);
+                break;
+            }
+            System.out.println(result);
+
+        }
+    }
+
+    //触发缓存一致性机制，MESI
+    private static /*volatile*/ boolean  running = true;
+    @Test
+    public void m() throws InterruptedException, IOException {
+        //final boolean running = true;
+        //boolean finalRunning = running;
+        Thread thread1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("m start");
+                while (running){
+                    //System.out.println("running:"+running);
+                    //log.info("running:"+running);
+                }
+                System.out.println("m end");
+            }
+        });
+        thread1.start();
+        thread1.sleep(1000);
+        running = false;
+
+        //让主线程不停止,子线程会继续循环
+        System.in.read();
     }
 }

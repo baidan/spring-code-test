@@ -40,7 +40,9 @@ public class ExpectionInterruptedThread {
         //endThread.run();//如果没有用thread类调用，这就是一个普通的run方法
 
         //虽然可以用runnable接口实现，但是调用的时候还是需要，否则就是一个普通的run方法；用thread对象包装一下, 第二个参数可以传入线程的自定义名称
+        //状态：新建
         Thread endThread = new Thread(useThread, "ify-thread-1000");
+        //状态：就绪，当获取到执行权的时候变成 运行 状态
         endThread.start();
         Thread.sleep(50);
         endThread.interrupt();

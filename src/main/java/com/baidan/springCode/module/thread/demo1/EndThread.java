@@ -2,7 +2,7 @@ package com.baidan.springCode.module.thread.demo1;
 
 public class EndThread {
 
-    private static class UseThread extends Thread {
+    public static class UseThread extends Thread {
         public UseThread(String name) {
             super(name);
         }
