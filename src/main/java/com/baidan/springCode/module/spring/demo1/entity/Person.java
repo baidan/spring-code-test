@@ -12,8 +12,8 @@ public class Person {
     public Person(String name, Integer age) {
         this.name = name;
         this.age = age;
-        System.out.println("有参构造：------person实例化------");
-        System.out.println(this.toString());
+        //System.out.println("有参构造：------person实例化------");
+        //System.out.println(this.toString());
     }
 
     public String getName() {

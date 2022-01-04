@@ -51,6 +51,20 @@ public class springCodeTest {
 
     }
 
+    @Test
+    public void test_Component_Configuration(){
+        ApplicationContext context = new AnnotationConfigApplicationContext(Demo1Config.class);
+        System.out.println("调用springContext获取："+context.getBean("person123", Person.class));
+
+        Demo1Config demo1Config = context.getBean("demo1Config", Demo1Config.class);
+        System.out.println("调用demo1Config的方法获取："+demo1Config.person());
+
+
+        System.out.println("调用springContext获取："+context.getBean("person123", Person.class));
+        System.out.println("调用demo1Config的方法获取："+demo1Config.person());
+
+    }
+
 
     @Test
     public void xmlTest() {
