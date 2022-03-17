@@ -1,30 +1,7 @@
-package com.baidan.springCode.module.proxy;
+package com.baidan.springCode.module.designPatterns.factory;
 
-import java.util.Random;
-
-public class demo2 implements moveClass {
-    @Override
-    public void move(){
-        long stime = System.currentTimeMillis();
-        try {
-            System.out.println("move,move,move");
-            Thread.sleep(new Random().nextInt(10000));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        long etime = System.currentTimeMillis();
-        System.out.println(etime-stime);
-    }
-
-    public static void main(String[] args) {
-        new demo2().move();
-    }
+public class Demo1 {
 }
-
-interface moveClass{
-    void move();
-}
-
 
 
 interface  IPhone{}
