@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Hashtable;
 
 @Slf4j
 public class dataStructureTest {
@@ -48,6 +49,16 @@ public class dataStructureTest {
     }
 
     @Test
+    public void test_1() {
+        int num = 22;
+        //num++;
+        num = num++;
+        System.out.println(num);
+
+        Hashtable<String, String> hashtable = new Hashtable<>();
+    }
+
+    @Test
     public void test() throws NoSuchFieldException, IllegalAccessException {
         /*int num = 22;
         printInt2Binary(-1);*/
@@ -62,6 +73,8 @@ public class dataStructureTest {
         value.set(chars, "abcd".toCharArray());
         System.out.println(chars.hashCode());
         System.out.println(chars);
+
+
     }
 }
 
